@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محلل كراش برو</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; }
+        .container { max-width: 400px; margin: auto; background: #1e293b; padding: 20px; border-radius: 15px; border: 2px solid #3b82f6; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #334155; color: white; }
+        button { width: 95%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 10px; display: none; background: #334155; border: 1px solid #475569; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🚀 المحلل الذكي v2</h2>
+        <input type="text" id="dataInput" placeholder="مثلاً: 1.5, 2.7, 1.05">
+        <button onclick="analyze()">تحليل عبر Python</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        async function analyze() {
+            const input = document.getElementById('dataInput').value;
+            const history = input.split(',').map(Number).filter(n => !isNaN(n));
+            const resDiv = document.getElementById('result');
+            resDiv.style.display = 'block';
+            resDiv.innerHTML = "جاري الاتصال بالسيرفر...";
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({history})
+                });
+                const res = await response.json();
+                resDiv.innerHTML = `<p>المتوسط: <b>${res.average}x</b></p><p>الحالة: <b>${res.status}</b></p>`;
+            } catch (e) { resDiv.innerHTML = "خطأ في الربط"; }
+        }
+    </script>
+</body>
+</html>
